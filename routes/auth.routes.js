@@ -145,4 +145,54 @@ router.route('/delete-user/:id').delete((req, res, next) => {
     })
 })
 
+//api rawger
+async function getGame() {
+    const Rawger = require('rawger');
+    const { games } = await Rawger({});
+
+
+    const game = (await games.get('the-binding-of-isaac-afterbirth')); // return game object
+    let data = {
+        img: game.raw().background_image,
+        name: game.raw().name,
+        desc: game.raw().description
+    }
+
+
+    return data;
+
+}
+
+async function getGames() {
+    const Rawger = require('rawger');
+    const { games } = await Rawger({});
+
+
+    const game = (await games.get('metal-gear-solid-4-guns-of-the-patriots')); // return game object
+    let data = {
+        img: game.raw().background_image,
+        name: game.raw().name,
+        desc: game.raw().description
+    }
+
+
+    return data;
+
+}
+
+router.route('/getData').get((req, res) => {
+
+        getGame().then((datd) => {
+            res.send(datd)
+        });
+    });
+    
+
+router.route('/getDatas').get((req, res) => {
+        getGames().then((datas) => {
+            res.send(datas)
+        });
+    }); 
+       
+
 module.exports = router;
