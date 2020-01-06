@@ -5,10 +5,11 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const router = express.Router();
 const userSchema = require("../models/User");
+const testSchema = require ("../models/Test")
 const authorize = require("../middleware/auth");
 const { check, validationResult } = require('express-validator');
 
-// Sign-up
+// create user
 router.post("/register-user",
     [
         check('name')
@@ -19,10 +20,10 @@ router.post("/register-user",
         check('email', 'Email is required')
             .not()
             .isEmpty(),
-        check('password', 'Password should be between 5 to 8 characters long')
+        check('password', 'Password should be between 4 to 10 characters long')
             .not()
             .isEmpty()
-            .isLength({ min: 5, max: 8 })
+            .isLength({ min: 4, max: 10 })
     ],
     (req, res, next) => {
         const errors = validationResult(req);
@@ -52,6 +53,48 @@ router.post("/register-user",
         }
     });
 
+//create tests
+
+router.post("/create-test",[
+    check('name')
+        .not()
+        .isEmpty(),
+    check('test')
+        .not()
+        .isEmpty(),
+    check('note')
+        .not()
+        .notEmpty(),
+    check('profile')
+        .not()
+        .notEmpty()
+],(req, res, next) => {
+    const errors = validationResult(req);
+        console.log(req.body);
+
+        if (!errors.isEmpty()) {
+            return res.status(422).jsonp(errors.array());
+        }
+        else{
+            const test = new testSchema({
+                name: req.body.name,
+                test: req.body.test,
+                note: req.body.note,
+                profile: req.body.profile
+            });
+            test.save().then((response) =>{
+                res.status(201).json({
+                    message: "Test succesfully created",
+                    result: response
+                });
+            }).catch(error => {
+                res.status(500).json({
+                    error: error
+                });
+            });
+        }
+}
+)
 
 // Sign-in
 router.post("/signin", (req, res, next) => {
@@ -101,6 +144,18 @@ router.route('/').get((req, res) => {
     })
 })
 
+//get tests
+
+router.route('/tests').get((req, res) => {
+    testSchema.find((error, response) => {
+        if (error){
+            return next (error)
+        } else {
+            res.status(200).json(response)
+        }
+    })
+})
+
 // Get Single User
 router.route('/user-profile/:id').get(authorize, (req, res, next) => {
     userSchema.findById(req.params.id, (error, data) => {
@@ -129,6 +184,21 @@ router.route('/update-user/:id').put((req, res, next) => {
     })
 })
 
+//update test
+router.route('/update-test/:id').put((req, res, next) => {
+    testSchema.findById(req.params.id,{
+        $set: req.body
+    },(error, data) =>{
+        if (error){
+            return next(error);
+            console.log(error)
+        } else {
+            res.json(data)
+            console.log('Test successfully updated')
+        }
+    })
+})
+
 
 // Delete User
 router.route('/delete-user/:id').delete((req, res, next) => {
@@ -143,6 +213,21 @@ router.route('/delete-user/:id').delete((req, res, next) => {
             })
         }
     })
+})
+
+// Delete test
+router.route('/delete-test/:id').delete((req, res, next) =>{
+    testSchema.deleteOne({_id: req.params.id}, (error, data) =>{
+        if (error) {
+            return next(error);
+        } else {
+            console.log("test supprimé avec succès!")
+            res.status(200).json({
+                msg: data
+                
+            })
+    }
+})
 })
 
 //api rawger
