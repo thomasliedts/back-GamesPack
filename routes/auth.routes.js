@@ -56,7 +56,7 @@ router.post("/register-user",
 //create tests
 
 router.post("/create-test",[
-    check('name')
+    check('jeu')
         .not()
         .isEmpty(),
     check('test')
@@ -65,7 +65,7 @@ router.post("/create-test",[
     check('note')
         .not()
         .notEmpty(),
-    check('profile')
+    check('pseudo')
         .not()
         .notEmpty()
 ],(req, res, next) => {
@@ -77,10 +77,10 @@ router.post("/create-test",[
         }
         else{
             const test = new testSchema({
-                name: req.body.name,
+                jeu: req.body.jeu,
                 test: req.body.test,
                 note: req.body.note,
-                profile: req.body.profile
+                pseudo: req.body.pseudo
             });
             test.save().then((response) =>{
                 res.status(201).json({

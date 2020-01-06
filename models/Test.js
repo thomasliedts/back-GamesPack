@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const uniqueValidator = require('mongoose-unique-validator');
 
 let testSchema = new Schema({
-    name: {
+    jeu: {
         type: String
     },
     test:{
@@ -14,7 +14,7 @@ let testSchema = new Schema({
     note:{
         type: Number
     },
-    profile:{
+    pseudo:{
         type:String
     }
 
