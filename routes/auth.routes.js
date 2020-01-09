@@ -170,23 +170,23 @@ router.route('/user-profile/:id').get(authorize, (req, res, next) => {
 })
 
 // Update User
-router.route('/update-user/:id').put((req, res, next) => {
-    userSchema.findById(req.params.id, {
-        $set: req.body
-    }, (error, data) => {
-        if (error) {
-            return next(error);
-            console.log(error)
-        } else {
-            res.json(data)
-            console.log('User successfully updated!')
-        }
-    })
-})
+// router.route('/update-user/:id').put((req, res, next) => {
+//     userSchema.findById(req.params.id, {
+//         $set: req.body
+//     }, (error, data) => {
+//         if (error) {
+//             return next(error);
+//             console.log(error)
+//         } else {
+//             res.json(data)
+//             console.log('User successfully updated!')
+//         }
+//     })
+// })
 
 //update test
 router.route('/update-test/:id').put((req, res, next) => {
-    testSchema.findById(req.params.id,{
+    testSchema.findById({_id:req.params.id},{
         $set: req.body
     },(error, data) =>{
         if (error){
@@ -198,7 +198,27 @@ router.route('/update-test/:id').put((req, res, next) => {
         }
     })
 })
-
+router.route('/update-user/:id').put((req, res)=>{
+    userSchema.findById({_id:req.params.id},(err,data) =>{
+        if (err) {
+            console.log(err)
+            return next(err); 
+                     } else{
+                         data.name= req.body.name;
+                         data.email = req.body.email;
+                         data.password = req.body.password;
+                         data.save((err) =>{
+                             if(err){
+                                 console.log(err)
+                             } else {
+                                console.log('good job user modifie with success')
+                                console.log(data)
+                                res.send('utilisateur modifié avec succés')        
+                             }
+                         })
+                     }
+    })
+})
 
 // Delete User
 router.route('/delete-user/:id').delete((req, res, next) => {
