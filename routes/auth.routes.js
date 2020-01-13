@@ -185,19 +185,21 @@ router.route('/user-profile/:id').get(authorize, (req, res, next) => {
 // })
 
 //update test
-router.route('/update-test/:id').put((req, res, next) => {
-    testSchema.findById({_id:req.params.id},{
-        $set: req.body
-    },(error, data) =>{
-        if (error){
-            return next(error);
-            console.log(error)
-        } else {
-            res.json(data)
-            console.log('Test successfully updated')
-        }
-    })
-})
+// router.route('/update-test/:id').put((req, res, next) => {
+//     testSchema.findById({_id:req.params.id},{
+//         $set: req.body
+//     },(error, data) =>{
+//         if (error){
+//             return next(error);
+//             console.log(error)
+//         } else {
+//             res.json(data)
+//             console.log('Test successfully updated')
+//         }
+//     })
+// })
+
+//upadte user
 router.route('/update-user/:id').put((req, res)=>{
     userSchema.findById({_id:req.params.id},(err,data) =>{
         if (err) {
