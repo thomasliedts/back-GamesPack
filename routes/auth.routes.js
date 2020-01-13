@@ -206,9 +206,10 @@ router.route('/update-user/:id').put((req, res)=>{
             console.log(err)
             return next(err); 
                      } else{
-                         data.name= req.body.name;
+                         bcrypt.hash(req.body.password,10).then((hash) =>{
+                              data.name= req.body.name;
                          data.email = req.body.email;
-                         data.password = req.body.password;
+                         data.password = hash;
                          data.save((err) =>{
                              if(err){
                                  console.log(err)
@@ -218,6 +219,9 @@ router.route('/update-user/:id').put((req, res)=>{
                                 res.send('utilisateur modifié avec succés')        
                              }
                          })
+                         })
+                        
+                         
                      }
     })
 })
